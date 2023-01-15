@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="moleGame" style="background-color: gray"></canvas>
+  </body>
+  <script>
+    class Mole {
+      constructor() {
+        this.attacked = false;
+      }
+    }
+
+    class MoleGame {
+      // 생성자
+      constructor(canvas) {
+        // 게임 설정
+        this.gameWidth = 350;
+        this.gameHeight = 700;
+        this.gameLevel = 1;
+        this.genMole = 1;
+        this.moleArray = new Array(9).fill(null);
+        this.score = 0;
+
+        // 캔버스
+        /** @type {HTMLCanvasElement} */
+        this.canvas = canvas;
+        this.canvas.width = this.gameWidth;
+        this.canvas.height = this.gameHeight;
+
+        // 컨텍스트(캔버스에 그림을 그리기 위한 도구)
+        /** @type {CanvasRenderingContext2D} */
+        this.ctx = canvas.getContext("2d");
+
+        // 배경 이미지
+        this.bgImage = new Image(this.gameWidth, this.gameHeight);
+        this.bgImage.src = "./asset/img/bg.jpg";
+
+        // 두더지 이미지
+        this.moleImage = new Image(85, 96);
+        this.moleImage.src = "./asset/img/mole_r.png";
+
+        // 공격 이펙트 이미지
+        this.boomImage = new Image(50, 50);
+        this.boomImage.src = "./asset/img/boom.png";
+
+        this.canvas.onmousedown = (e) => {
+          this.moleArray.forEach((mole) => {
+            if (
+              e.clientX > mole.x &&
+              e.clientX < mole.x + 85 &&
+              e.clientY > mole.y &&
+              e.clientY < mole.y + 96
+            ) {
+              mole.attacked = true;
+            }
+          });
+        };
+
+        // 두더지 생성
+        setInterval(() => {
+          if (this.moleArray.some((mole) => mole == null)) {
+            while (true) {
+              const tempIndex = Math.floor(Math.random() * 9);
+              if (this.moleArray[tempIndex] == null) {
+                this.moleArray[tempIndex] = new Mole();
+                break;
+              }
+            }
+          }
+        }, 2000 / this.gameLevel);
+
+        this.render();
+      }
+
+      // 화면 그리기 메서드
+      render() {
+        setInterval(() => {
+          // 배경 그리기
+          this.ctx.drawImage(
+            this.bgImage,
+            0,
+            0,
+            this.gameWidth,
+            this.gameHeight
+          );
+
+          // 두더지 그리기
+          this.moleArray.forEach((mole, index) => {
+            if (mole == null) return;
+            this.ctx.drawImage(
+              this.moleImage,
+              (index % 3) * 107 + 20,
+              Math.floor(index / 3) * 143 + 200,
+              85,
+              96
+            );
+          });
+
+          // 점수
+          this.ctx.font = "30px Arial";
+          this.ctx.fillText(`score : 0`, 20, 30);
+        }, 100);
+      }
+    }
+
+    // alert("게임시작");
+
+    new MoleGame(document.getElementById("moleGame"));
+  </script>
+</html>

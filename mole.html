@@ -28,6 +28,8 @@
         this.genMole = 2;
         this.moleArray = new Array(9).fill(null);
         this.score = 0;
+        this.moleInterval = null;
+        this.renderInterval = null;
 
         // 캔버스
         /** @type {HTMLCanvasElement} */
@@ -72,7 +74,7 @@
         };
 
         // 두더지 생성
-        setInterval(() => {
+        this.moleInterval = setInterval(() => {
           let count = this.genMole;
           while (count > 0) {
             if (this.moleArray.some((mole) => mole == null)) {
@@ -98,7 +100,13 @@
 
       // 화면 그리기 메서드
       render() {
-        setInterval(() => {
+        this.renderInterval = setInterval(() => {
+          if (
+            this.moleArray.filter((value) => value != null).length >
+            this.genMole * 2.5
+          ) {
+            this.over();
+          }
           // 배경 그리기
           this.ctx.drawImage(
             this.bgImage,
@@ -122,9 +130,14 @@
           this.ctx.fillText(`score : ${this.score}`, 20, 30);
         }, 100);
       }
+      over() {
+        clearInterval(this.moleInterval);
+        clearInterval(this.renderInterval);
+        alert("게임오버");
+      }
     }
 
-    // alert("게임시작");
+    alert("게임시작");
 
     new MoleGame(document.getElementById("moleGame"));
   </script>

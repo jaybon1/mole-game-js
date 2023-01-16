@@ -10,6 +10,7 @@
     <canvas id="moleGame"></canvas>
   </body>
   <script>
+    // 두더지 클래스
     class Mole {
       constructor(game, index, x, y) {
         this.idx = index;
@@ -17,7 +18,9 @@
         this.y = y;
         this.attacked = false;
 
-        const failTimer = setTimeout(() => {
+        // 일정 시간이 지나면 사라진다.
+        // 사라지기 전까지 공격받지 않으면 fail이 쌓인다.
+        setTimeout(() => {
           game.moleArray[index] = null;
           if (!this.attacked) {
             game.fail++;
@@ -26,6 +29,7 @@
       }
     }
 
+    // 게임 클래스
     class MoleGame {
       // 생성자
       constructor(canvas) {
@@ -64,6 +68,7 @@
 
         // 공격
         this.canvas.onmousedown = (e) => {
+          // 클릭한 위치에 두더지가 있는지 확인
           this.moleArray.forEach((mole, index) => {
             if (
               mole != null &&
@@ -75,9 +80,6 @@
             ) {
               mole.attacked = true;
               this.score = this.score + 1;
-              // setTimeout(() => {
-              //   this.moleArray[index] = null;
-              // }, 500);
             }
           });
         };
@@ -143,6 +145,7 @@
           this.ctx.fillText(`fail : ${this.fail}`, 160, 30);
         }, 100);
       }
+
       over() {
         clearInterval(this.moleInterval);
         clearInterval(this.renderInterval);

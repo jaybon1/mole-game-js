@@ -11,10 +11,18 @@
   </body>
   <script>
     class Mole {
-      constructor(x, y) {
+      constructor(game, index, x, y) {
+        this.idx = index;
         this.x = x;
         this.y = y;
         this.attacked = false;
+
+        const failTimer = setTimeout(() => {
+          game.moleArray[index] = null;
+          if (!this.attacked) {
+            game.fail++;
+          }
+        }, 1500);
       }
     }
 
@@ -28,6 +36,7 @@
         this.genMole = 2;
         this.moleArray = new Array(9).fill(null);
         this.score = 0;
+        this.fail = 0;
         this.moleInterval = null;
         this.renderInterval = null;
 
@@ -66,9 +75,9 @@
             ) {
               mole.attacked = true;
               this.score = this.score + 1;
-              setTimeout(() => {
-                this.moleArray[index] = null;
-              }, 500);
+              // setTimeout(() => {
+              //   this.moleArray[index] = null;
+              // }, 500);
             }
           });
         };
@@ -82,6 +91,8 @@
                 const tempIndex = Math.floor(Math.random() * 9);
                 if (this.moleArray[tempIndex] == null) {
                   this.moleArray[tempIndex] = new Mole(
+                    this,
+                    tempIndex,
                     (tempIndex % 3) * 107 + 20,
                     Math.floor(tempIndex / 3) * 143 + 200
                   );
@@ -101,12 +112,10 @@
       // 화면 그리기 메서드
       render() {
         this.renderInterval = setInterval(() => {
-          if (
-            this.moleArray.filter((value) => value != null).length >
-            this.genMole * 2.5
-          ) {
+          if (this.fail > this.genMole * 2.5) {
             this.over();
           }
+
           // 배경 그리기
           this.ctx.drawImage(
             this.bgImage,
@@ -128,6 +137,10 @@
           // 점수
           this.ctx.font = "30px Arial";
           this.ctx.fillText(`score : ${this.score}`, 20, 30);
+
+          // 실패
+          this.ctx.font = "30px Arial";
+          this.ctx.fillText(`fail : ${this.fail}`, 160, 30);
         }, 100);
       }
       over() {

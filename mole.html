@@ -89,18 +89,15 @@
           let count = this.genMole;
           while (count > 0) {
             if (this.moleArray.some((mole) => mole == null)) {
-              while (true) {
-                const tempIndex = Math.floor(Math.random() * 9);
-                if (this.moleArray[tempIndex] == null) {
-                  this.moleArray[tempIndex] = new Mole(
-                    this,
-                    tempIndex,
-                    (tempIndex % 3) * 107 + 20,
-                    Math.floor(tempIndex / 3) * 143 + 200
-                  );
-                  count = count - 1;
-                  break;
-                }
+              const tempIndex = Math.floor(Math.random() * 9);
+              if (this.moleArray[tempIndex] == null) {
+                this.moleArray[tempIndex] = new Mole(
+                  this,
+                  tempIndex,
+                  (tempIndex % 3) * 107 + 20,
+                  Math.floor(tempIndex / 3) * 143 + 200
+                );
+                count = count - 1;
               }
             } else {
               count = 0;
